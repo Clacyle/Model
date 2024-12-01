@@ -1,19 +1,14 @@
-from transformers import TimeSeriesTransformerConfig
-from transformers import TimeSeriesTransformerForPrediction
-
 from model.inference import inference
 from model.training import training
 from model.batch import batch
 from model.validate import validate
 from model.sampling import distribution
+from model.setup import setup
 
 from dataset import dataset
-import json
 
 # import config from JSON and build model
-jsonConfig = json.load(open("modelconfig.json", "r"))
-config = TimeSeriesTransformerConfig(**jsonConfig)
-model = TimeSeriesTransformerForPrediction(config)
+model = setup("modelconfig.json")
 
 # build batches from dataset
 trainingSet, validationSet, testingSet = batch(dataset, model.config)
