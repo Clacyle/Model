@@ -28,7 +28,7 @@ def evaluate(prediction, batch) -> str:
   mape = None
   mae = torch.mean(torch.abs(diff)).item()
   rmse = torch.sqrt(torch.mean(diff ** 2)).item()
-  if torch.any(future_values_flat == 0):
+  if not torch.any(future_values_flat == 0):
     mape = torch.mean(torch.abs(diff / future_values_flat)).item() * 100
 
   return f"\n\t\tMAE: {mae}\n\t\tRMSE: {rmse}" + (f"\n\t\tMAPE: {mape}" if mape else "")
