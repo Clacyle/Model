@@ -4,6 +4,7 @@ from model.batch import batch
 from model.validate import validate
 from model.sampling import distribution
 from model.setup import setup
+from model.evaluate import benchmark
 
 from dataset import dataset
 
@@ -19,7 +20,4 @@ validate(trainingSet, model.config)
 # train the model on the training data
 model, outputs = training(model, trainingSet)
 
-# predict new data from the model
-for prediction in inference(model, validationSet):
-  mean_prediction = prediction.sequences.mean(dim=1)
-  print(mean_prediction)
+benchmark(model, validationSet)
