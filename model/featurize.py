@@ -15,13 +15,11 @@ def featurize(inputs: List[Input], config) -> Features:
       cycle_features: List[float] = [
         cycle.cycle_duration, 
         cycle.menstruations_duration, 
+        cycle.ovulation_day,
+        cycle.menstruations_duration,
+        cycle.fertility_duration,
+        cycle.unusual_bleeding,
       ]
-
-      # assert len(cycle.ovulation_distribution) == int(cycle.cycle_duration)
-
-      cycle_features.extend(
-        cycle.ovulation_distribution
-      )
 
       input_cycle_values.append(cycle_features)
       
@@ -46,10 +44,10 @@ def featurize(inputs: List[Input], config) -> Features:
     past_time_features = rangeTensor(
       (batch_size, sequence_length, config.num_time_features)
     ),
-    future_time_features = rangeTensor(
-      (batch_size, prediction_length, config.num_time_features)
+    future_time_features = torch.FloatTensor(
+      rangeTensor((batch_size, prediction_length, config.num_time_features)) + sequence_length
     ),
-    past_observed_mask = boolTensor((batch_size, sequence_length, input_size))
+    past_observed_mask = torch.BoolTensor(past_values != 0)
   )
   
   return features
@@ -58,7 +56,7 @@ def featurize(inputs: List[Input], config) -> Features:
 def rangeTensor(shape, value=None): 
   return torch.FloatTensor([
     [
-      [i for i in range(shape[2])] if value is None else value for i in range(shape[1])
+      [i for _ in range(shape[2])] if value is None else value for i in range(shape[1])
     ] for _ in range(shape[0])
   ])
 
